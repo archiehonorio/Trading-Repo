@@ -1,0 +1,6 @@
+python-binance
+TA-Lib
+python-dotenv
+numpy
+backtrader
+flask
