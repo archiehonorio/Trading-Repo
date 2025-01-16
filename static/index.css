@@ -1,0 +1,279 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Layout */
+header {
+  padding: 2rem 0;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+header h2 {
+  font-size: 2rem;
+  color: #2196f3;
+  margin-bottom: 1rem;
+}
+
+main {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Chart Container Styles */
+#container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.chart-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 550px;
+}
+
+/* Individual Chart Styling */
+.chart-header {
+  padding: 0.5rem 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.chart-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1976d2;
+}
+.candlestick-container {
+  height: 70%;
+  width: 100%;
+}
+.volume-container {
+  height: 25%;
+  width: 100%;
+  margin-top: 5%;
+}
+
+/* Chart and Volume Layout */
+[id^="chart-"] {
+  height: 500px !important; /* Increased height to accommodate both charts */
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Trading Controls Section */
+.trading-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.trading-section h3 {
+  color: #1976d2;
+  margin-bottom: 1.5rem;
+}
+
+.trading-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  align-items: end;
+}
+
+/* Form Elements */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #2196f3;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}
+
+.form-group button {
+  padding: 0.75rem 1.5rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form-group button:hover {
+  background-color: #1976d2;
+}
+
+/* RSI Configuration */
+.rsi-config {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  margin: 2rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.rsi-config .form-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rsi-config input[type="text"] {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+}
+
+.rsi-config input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 4px;
+}
+
+/* Wallet Sections */
+.wallet-sections {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.wallet-section {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.wallet-section h2 {
+  color: #1976d2;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+}
+
+/* Table Styles */
+.balance-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1rem;
+}
+
+.balance-table th,
+.balance-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.balance-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #666;
+}
+
+.balance-table tr:last-child td {
+  border-bottom: none;
+}
+
+.balance-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  [id^="chart-"] {
+    height: 350px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .trading-form {
+    grid-template-columns: 1fr;
+  }
+
+  .rsi-config {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .wallet-section {
+    overflow-x: auto;
+  }
+
+  .balance-table {
+    min-width: 600px;
+  }
+}
+
+/* Error Message */
+.error_message {
+  padding: 1rem;
+  border: 1px solid rgba(255, 0, 0, 0.2);
+  background-color: rgba(255, 0, 0, 0.05);
+  color: #d32f2f;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+}

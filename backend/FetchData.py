@@ -1,6 +1,6 @@
 import os, csv
 from dotenv import load_dotenv
-from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
+from binance import Client
 
 load_dotenv()
 api_key = os.getenv('API_KEY')
