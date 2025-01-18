@@ -1,4 +1,11 @@
 /* Reset and Base Styles */
+
+:root {
+  --primary-color: #2a2a2a;
+  --secondary-color: white;
+  --primary-color-accent: #17171774;
+  --secondary-color-accent: #a3a3a359;
+}
 * {
   margin: 0;
   padding: 0;
@@ -7,20 +14,22 @@
 
 body {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
-  background-color: #f8f9fa;
+  background-color: var(--primary-color);
   color: #333;
   line-height: 1.6;
 }
 
 /* Layout */
 header {
-  padding: 2rem 0;
-  background-color: white;
+  background-color: var(--primary-color-accent);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
+  display: flex;
+  margin: 0;
+  justify-content: flex-start;
 }
 
-header h2 {
+nav h2 {
   font-size: 2rem;
   color: #2196f3;
   margin-bottom: 1rem;
@@ -31,50 +40,67 @@ main {
   margin: 2rem auto;
   padding: 0 1rem;
 }
+nav {
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 /* Chart Container Styles */
 #container {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
+  width: 60%;
+  max-width: 1920px;
+  padding: 20px;
+  display: flex;
+  margin-right: 2rem;
+  height: 100%;
+}
+.trading-section-control {
+  width: 35%;
 }
 
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 20px;
+  width: 100%;
 }
 
 .chart-wrapper {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  min-height: 550px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Individual Chart Styling */
 .chart-header {
-  padding: 0.5rem 1rem;
-  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
 }
 
 .chart-title {
-  font-size: 1.1rem;
+  font-size: 16px;
   font-weight: 600;
-  color: #1976d2;
+  color: #333;
+  margin: 0;
 }
-.candlestick-container {
-  height: 70%;
-  width: 100%;
+
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #container {
+    padding: 10px;
+  }
+
+  .chart-wrapper {
+    padding: 10px;
+  }
 }
 .volume-container {
   height: 25%;

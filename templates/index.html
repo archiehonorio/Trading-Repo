@@ -7,68 +7,129 @@
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='index.css')}}"
+      href="{{ url_for('static', filename='css/index.css')}}"
+      href="{{ url_for('static', filename='css/table.css')}}"
     />
   </head>
   <body>
+    <nav><h2>WINNER WINNER CHICKEN DINNER!</h2></nav>
+
     <header>
-      <h2>Trading Dashboard</h2>
       <div id="container" class="chart-container"></div>
+      <div class="trading-section-control">
+        <!-- Trading Form Section -->
+        <section class="trading-section">
+          <h3>Trading Controls</h3>
+          <form action="/trade" method="post" class="trading-form">
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input
+                type="text"
+                id="quantity"
+                name="quantity"
+                placeholder="0.001"
+              />
+            </div>
+            <div class="form-group">
+              <label for="price">Price</label>
+              <input type="text" id="price" name="price" placeholder="$1" />
+            </div>
+            <div class="form-group">
+              <label for="token_symbol">Symbol</label>
+              <select name="token_symbol" id="token_symbol">
+                {% for symbol in symbols %}
+                <option value="{{symbol['symbol']}}">
+                  {{symbol['symbol']}}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="leverage">Leverage (Isolated)</label>
+              <input
+                type="number"
+                id="leverage"
+                name="leverage"
+                min="1"
+                max="75"
+                placeholder="10"
+              />
+            </div>
+            <div class="form-group">
+              <button type="submit" name="buy">Buy</button>
+              <button type="submit" name="sell">Sell</button>
+            </div>
+          </form>
+        </section>
+        <!-- Position & Orders -->
+        <div class="container-order">
+          <div class="trading-section" id="orders-section">
+            <div class="section-title">Live Orders</div>
+            <div id="orders-container">
+              <!-- Table will be inserted here by JavaScript -->
+            </div>
+          </div>
+          <div class="trading-section" id="positions-section">
+            <div class="section-title">Live Positions</div>
+            <div id="positions-container">
+              <!-- Table will be inserted here by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- USDS-M Futures Wallet Section -->
+        <div class="wallet-section">
+          <h2>USDⓈ-M Futures Wallet Balances</h2>
+          {% if usds_futures_balances %}
+          <table class="balance-table">
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Wallet Balance</th>
+                <th>Unrealized PNL</th>
+                <th>Margin Balance</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for balance in usds_futures_balances %}
+              <tr>
+                <td>{{ balance.asset }}</td>
+                <td>{{ balance.wallet_balance }}</td>
+                <td>{{ balance.unrealized_pnl }}</td>
+                <td>{{ balance.margin_balance }}</td>
+                <td>{{ balance.total }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>No USDⓈ-M futures balances found.</p>
+          {% endif %}
+        </div>
+      </div>
     </header>
 
     <main class="chart-container">
-      <!-- Trading Form Section -->
-      <section class="trading-section">
-        <h3>Trading Controls</h3>
-        <form action="/buy" method="post" class="trading-form">
-          <div class="form-group">
-            <label for="quantity">Quantity</label>
-            <input
-              type="text"
-              id="quantity"
-              name="quantity"
-              placeholder="0.001"
-            />
-          </div>
-          <div class="form-group">
-            <label for="price">Price</label>
-            <input type="text" id="price" name="price" placeholder="$1" />
-          </div>
-          <div class="form-group">
-            <label for="token_symbol">Symbol</label>
-            <select name="token_symbol" id="token_symbol">
-              {% for symbol in symbols %}
-              <option value="{{symbol['symbol']}}">{{symbol['symbol']}}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <button type="submit" name="buy">Buy</button>
-          </div>
-        </form>
-      </section>
-
       <!-- RSI Configuration -->
       <section class="rsi-config">
-        <label>
+        <label for="rsi-toggle">
           <input type="checkbox" id="rsi-toggle" />
           RSI
         </label>
         <div class="form-group">
+          <label for="rsi_length">Length</label>
           <input type="text" id="rsi_length" placeholder="14" />
-          <label>Length</label>
         </div>
         <div class="form-group">
+          <label for="rsi_overbought">Overbought</label>
           <input type="text" id="rsi_overbought" placeholder="70" />
-          <label>Overbought</label>
         </div>
         <div class="form-group">
+          <label for="rsi_oversold">Oversold</label>
           <input type="text" id="rsi_oversold" placeholder="30" />
-          <label>Oversold</label>
         </div>
       </section>
-
-      <!-- Charts Grid -->
 
       <!-- Wallet Balances Dashboard -->
       <div class="wallet-sections">
@@ -130,37 +191,6 @@
           {% endif %}
         </div>
 
-        <!-- USDS-M Futures Wallet Section -->
-        <div class="wallet-section">
-          <h2>USDⓈ-M Futures Wallet Balances</h2>
-          {% if usds_futures_balances %}
-          <table class="balance-table">
-            <thead>
-              <tr>
-                <th>Asset</th>
-                <th>Wallet Balance</th>
-                <th>Unrealized PNL</th>
-                <th>Margin Balance</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for balance in usds_futures_balances %}
-              <tr>
-                <td>{{ balance.asset }}</td>
-                <td>{{ balance.wallet_balance }}</td>
-                <td>{{ balance.unrealized_pnl }}</td>
-                <td>{{ balance.margin_balance }}</td>
-                <td>{{ balance.total }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% else %}
-          <p>No USDⓈ-M futures balances found.</p>
-          {% endif %}
-        </div>
-
         <!-- Coin-M Futures Wallet Section -->
         <div class="wallet-section">
           <h2>Coin-M Futures Wallet Balances</h2>
@@ -191,6 +221,29 @@
         </div>
       </div>
     </main>
-    <script src="{{ url_for('static', filename='chart.js')}}"></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/main.js')}}"
+    ></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/chart.js')}}"
+    ></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/websocket.js')}}"
+    ></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/utils.js')}}"
+    ></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/resize.js')}}"
+    ></script>
+    <script
+      type="module"
+      src="{{ url_for('static', filename='js/live.js')}}"
+    ></script>
   </body>
 </html>
