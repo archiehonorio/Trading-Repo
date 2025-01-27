@@ -1,13 +1,20 @@
 import { validateChartData } from "./utils.js";
 
-export function setupWebSockets(timeframes, charts) {
+/**
+ * Sets up WebSocket connections for each timeframe and token.
+ * @param {Object} timeframes - The timeframes configuration.
+ * @param {Object} charts - The charts object to update.
+ * @param {string} token - The token symbol (e.g., "XRPUSDT").
+ */
+export function setupWebSockets(timeframes, charts, token) {
   const webSockets = {};
   Object.entries(timeframes).forEach(([timeframe, config]) => {
     if (charts[timeframe]) {
-      webSockets[timeframe] = setupWebSocket(timeframe, config, charts);
+      webSockets[timeframe] = setupWebSocket(timeframe, config, charts, token);
     }
   });
 
+  // Close all WebSocket connections when the page is unloaded
   window.addEventListener("beforeunload", () => {
     Object.values(webSockets).forEach((ws) => {
       if (ws && ws.readyState === WebSocket.OPEN) {
@@ -15,24 +22,41 @@ export function setupWebSockets(timeframes, charts) {
       }
     });
   });
+
+  return webSockets;
 }
 
-function setupWebSocket(timeframe, config, charts) {
+/**
+ * Sets up a WebSocket connection for a specific timeframe and token.
+ * @param {string} timeframe - The timeframe (e.g., "1m").
+ * @param {Object} config - The configuration for the timeframe.
+ * @param {Object} charts - The charts object to update.
+ * @param {string} token - The token symbol (e.g., "XRPUSDT").
+ * @returns {WebSocket} The WebSocket instance.
+ */
+function setupWebSocket(timeframe, config, charts, token) {
   let ws = null;
   let reconnectAttempts = 0;
   const maxReconnectAttempts = 5;
   const reconnectDelay = 5000;
 
+  /**
+   * Connects to the WebSocket and sets up event handlers.
+   */
   function connect() {
-    ws = new WebSocket(
-      `wss://fstream.binance.com/ws/xrpusdt${config.wsInterval}`
-    );
+    // Construct the WebSocket URL using the token and timeframe
+    const wsUrl = `wss://fstream.binance.com/ws/${token.toLowerCase()}${
+      config.wsInterval
+    }`;
+    ws = new WebSocket(wsUrl);
 
+    // Handle incoming messages
     ws.onmessage = function (event) {
       try {
         const messageObject = JSON.parse(event.data);
         const candlestick = messageObject.k;
 
+        // Validate the candlestick data
         if (
           !candlestick ||
           !validateChartData([
@@ -48,6 +72,7 @@ function setupWebSocket(timeframe, config, charts) {
           return;
         }
 
+        // Update the candlestick chart
         charts[timeframe].candlestickSeries.update({
           time: Math.floor(candlestick.t / 1000),
           open: Number(parseFloat(candlestick.o).toFixed(4)),
@@ -56,6 +81,7 @@ function setupWebSocket(timeframe, config, charts) {
           close: Number(parseFloat(candlestick.c).toFixed(4)),
         });
 
+        // Update the volume chart
         charts[timeframe].volumeSeries.update({
           time: Math.floor(candlestick.t / 1000),
           value: Number(parseFloat(candlestick.v).toFixed(4)),
@@ -72,24 +98,28 @@ function setupWebSocket(timeframe, config, charts) {
       }
     };
 
+    // Handle WebSocket errors
     ws.onerror = function (error) {
       console.error(`WebSocket error for ${timeframe}:`, error);
     };
 
+    // Handle WebSocket closure
     ws.onclose = function () {
       console.log(`WebSocket closed for ${timeframe}`);
       if (reconnectAttempts < maxReconnectAttempts) {
         reconnectAttempts++;
-        setTimeout(connect, reconnectDelay);
+        setTimeout(connect, reconnectDelay); // Reconnect after a delay
       }
     };
 
+    // Handle WebSocket connection opening
     ws.onopen = function () {
       console.log(`WebSocket connected for ${timeframe}`);
-      reconnectAttempts = 0;
+      reconnectAttempts = 0; // Reset reconnect attempts on successful connection
     };
   }
 
+  // Initiate the WebSocket connection
   connect();
   return ws;
 }

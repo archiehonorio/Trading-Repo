@@ -335,20 +335,16 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     if (ordersHeader && positionsHeader) {
-      const createRefreshButton = (text, onClick) => {
+      const createRefreshButton = (onClick) => {
         const button = document.createElement("button");
-        button.textContent = "Refresh";
         button.className = "refresh-button";
+        button.innerHTML = '<i class="fas fa-sync-alt"></i>'; // Using Font Awesome icon
         button.onclick = onClick;
         return button;
       };
 
-      ordersHeader.appendChild(
-        createRefreshButton("Refresh Orders", throttledFetchOrders)
-      );
-      positionsHeader.appendChild(
-        createRefreshButton("Refresh Positions", throttledFetchPositions)
-      );
+      ordersHeader.appendChild(createRefreshButton(throttledFetchOrders));
+      positionsHeader.appendChild(createRefreshButton(throttledFetchPositions));
     }
   }
 

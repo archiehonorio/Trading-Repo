@@ -20,6 +20,18 @@
         <!-- Trading Form Section -->
         <section class="trading-section">
           <h3>Trading Controls</h3>
+          <!-- Selecting Token Chart -->
+          <div class="token-selection">
+            <label for="token-select">Select Chart Token:</label>
+            <select id="token-select">
+              <option value="XRPUSDT" selected>XRPUSDT</option>
+              <option value="ADAUSDT">ADAUSDT</option>
+              <option value="BTCUSDT">BTCUSDT</option>
+              <option value="ETHUSDT">ETHUSDT</option>
+              <option value="TRUMPUSDT">TRUMPUSDT</option>
+            </select>
+            <button id="update-chart">Update Chart</button>
+          </div>
           <form action="/trade" method="post" class="trading-form">
             <div class="form-group">
               <label for="quantity">Quantity</label>
@@ -89,6 +101,7 @@
                 <th>Unrealized PNL</th>
                 <th>Margin Balance</th>
                 <th>Total</th>
+                <th>Total (PHP)</th>
               </tr>
             </thead>
             <tbody>
@@ -99,6 +112,7 @@
                 <td>{{ balance.unrealized_pnl }}</td>
                 <td>{{ balance.margin_balance }}</td>
                 <td>{{ balance.total }}</td>
+                <td>₱{{ (balance.total|float * exchange_rate)|round(2) }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -144,6 +158,7 @@
                 <th>Available</th>
                 <th>Locked</th>
                 <th>Total</th>
+                <th>Total (PHP)</th>
               </tr>
             </thead>
             <tbody>
@@ -153,6 +168,7 @@
                 <td>{{ balance.free }}</td>
                 <td>{{ balance.locked }}</td>
                 <td>{{ balance.total }}</td>
+                <td>₱{{ (balance.total|float * exchange_rate)|round(2) }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -173,6 +189,7 @@
                 <th>Available</th>
                 <th>Locked</th>
                 <th>Total</th>
+                <th>Total (PHP)</th>
               </tr>
             </thead>
             <tbody>
@@ -182,6 +199,7 @@
                 <td>{{ balance.free }}</td>
                 <td>{{ balance.locked }}</td>
                 <td>{{ balance.total }}</td>
+                <td>₱{{ (balance.total|float * exchange_rate)|round(2) }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -202,6 +220,7 @@
                 <th>Wallet Balance</th>
                 <th>Unrealized PNL</th>
                 <th>Total</th>
+                <th>Total (PHP)</th>
               </tr>
             </thead>
             <tbody>
@@ -211,6 +230,7 @@
                 <td>{{ balance.wallet_balance }}</td>
                 <td>{{ balance.unrealized_pnl }}</td>
                 <td>{{ balance.total }}</td>
+                <td>₱{{ (balance.total|float * exchange_rate)|round(2) }}</td>
               </tr>
               {% endfor %}
             </tbody>
