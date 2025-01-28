@@ -29,7 +29,6 @@ export function initializeCharts(mainContainer, timeframes) {
     charts[timeframe] = createChart(config.container, config.visibleRange);
   });
 
-  fetchDataForCharts(timeframes, charts);
   return charts;
 }
 
@@ -163,11 +162,13 @@ function createChart(containerId, visibleRange) {
   return { candlestickChart, volumeChart, candlestickSeries, volumeSeries };
 }
 
-function fetchDataForCharts(timeframes, charts) {
+export function fetchDataForCharts(timeframes, charts, token) {
   Object.entries(timeframes).forEach(([timeframe, config]) => {
     if (!charts[timeframe]) return;
 
-    fetch(`http://127.0.0.1:5000/history?interval=${config.interval}`)
+    fetch(
+      `http://127.0.0.1:5000/history?interval=${config.interval}&token=${token}`
+    )
       .then((response) => response.json())
       .then((data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {

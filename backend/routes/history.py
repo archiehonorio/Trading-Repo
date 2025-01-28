@@ -12,9 +12,13 @@ def history():
     Fetches historical candlestick data for a given token and interval.
     The date range is dynamically calculated as the current date and one year prior.
     """
-    # Get the token and interval from the query parameters
-    token = request.args.get('token', 'XRPUSDT')  # Default to XRPUSDT if no token is provided
+    # Get the token and interval from the query parameters (no default for token)
+    token = request.args.get('token')  # Token is required
     interval = request.args.get('interval', '15m')  # Default to 15m if no interval is provided
+
+    # Validate that token is provided
+    if not token:
+        return jsonify({"error": "Token parameter is required"}), 400
 
     # Calculate the current date and the date one year ago
     end_date = datetime.now()

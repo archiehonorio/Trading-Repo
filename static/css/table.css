@@ -93,3 +93,43 @@
   padding: 5px 10px;
   border-radius: 4px;
 }
+
+/* Charts container */
+.token-selection {
+  margin-bottom: 2rem;
+  align-self: start;
+}
+.token-selection button {
+  padding: 0.75rem 1.5rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.token-selection button:hover {
+  background-color: #1976d2;
+}
+
+.token-selection label {
+  font-size: 0.9rem;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.token-selection select {
+  padding: 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.token-selection select:focus {
+  border-color: #2196f3;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+}

@@ -8,19 +8,39 @@ import { validateChartData } from "./utils.js";
  */
 export function setupWebSockets(timeframes, charts, token) {
   const webSockets = {};
-  Object.entries(timeframes).forEach(([timeframe, config]) => {
-    if (charts[timeframe]) {
-      webSockets[timeframe] = setupWebSocket(timeframe, config, charts, token);
-    }
-  });
 
-  // Close all WebSocket connections when the page is unloaded
-  window.addEventListener("beforeunload", () => {
-    Object.values(webSockets).forEach((ws) => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.close();
+  Object.entries(timeframes).forEach(([timeframe, config]) => {
+    if (!charts[timeframe]) return;
+
+    // Close existing WebSocket if it exists
+    if (webSockets[timeframe]) {
+      webSockets[timeframe].close();
+      delete webSockets[timeframe];
+    }
+
+    // Create new WebSocket connection for futures
+    const ws = new WebSocket(
+      `wss://fstream.binance.com/ws/${token.toLowerCase()}${config.wsInterval}`
+    );
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.k) {
+        const kline = message.k;
+        const newCandle = {
+          time: Math.floor(kline.t / 1000),
+          open: parseFloat(kline.o),
+          high: parseFloat(kline.h),
+          low: parseFloat(kline.l),
+          close: parseFloat(kline.c),
+        };
+
+        // Update chart with new candle
+        charts[timeframe].candlestickSeries.update(newCandle);
       }
-    });
+    };
+
+    webSockets[timeframe] = ws;
   });
 
   return webSockets;

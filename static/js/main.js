@@ -1,19 +1,15 @@
-import { initializeCharts } from "./chart.js";
+import { initializeCharts, fetchDataForCharts } from "./chart.js";
 import { setupWebSockets } from "./websocket.js";
 import { setupResizeHandling } from "./resize.js";
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Get the main container for the charts
   const mainContainer = document.getElementById("container");
   if (!mainContainer) {
     console.error("Main container not found!");
     return;
   }
 
-  // Define the visible range for the charts
-  const vR = 20; // Reduced visible range for a more zoomed out view
-
-  // Define the timeframes and their configurations
+  const vR = 20; // Visible range for charts
   const timeframes = {
     "1m": {
       interval: "1m",
@@ -41,96 +37,77 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   };
 
-  // Initialize the charts
+  // Initialize charts and WebSockets
   let charts = initializeCharts(mainContainer, timeframes);
-
-  // Get the initial token from the dropdown
   let currentToken = document.getElementById("token-select").value;
-
-  // Set up WebSocket connections for the initial token
   let webSockets = setupWebSockets(timeframes, charts, currentToken);
 
-  // Set up resize handling for the charts
+  // Load initial data
+  fetchDataForCharts(timeframes, charts, currentToken);
   setupResizeHandling(charts, timeframes);
 
-  // Add an event listener to the "Update Chart" button
+  // Update chart button handler
   document
     .getElementById("update-chart")
     .addEventListener("click", function () {
-      // Get the new token from the dropdown
       const newToken = document.getElementById("token-select").value;
 
-      // Close existing WebSocket connections
-      Object.values(webSockets).forEach((ws) => {
+      // Close all existing WebSockets
+      Object.entries(webSockets).forEach(([timeframe, ws]) => {
         if (ws && ws.readyState === WebSocket.OPEN) {
           ws.close();
+          console.log(`Closed WebSocket for ${timeframe}`);
         }
       });
+      webSockets = {}; // Clear existing references
 
-      // Update the charts with the new token
+      // Update historical data first
       updateChartsWithNewToken(newToken, charts, timeframes);
 
-      // Reinitialize WebSocket connections for the new token
-      webSockets = setupWebSockets(timeframes, charts, newToken);
-
-      // Update the current token
-      currentToken = newToken;
+      // Reinitialize WebSockets after short delay
+      setTimeout(() => {
+        webSockets = setupWebSockets(timeframes, charts, newToken);
+        currentToken = newToken;
+        console.log(`Switched to ${newToken} futures`);
+      }, 500);
     });
 });
 
-/**
- * Updates the charts with data for a new token.
- * @param {string} token - The new token symbol (e.g., "BTCUSDT").
- * @param {Object} charts - The charts object to update.
- * @param {Object} timeframes - The timeframes configuration.
- */
+// Historical data update function
 function updateChartsWithNewToken(token, charts, timeframes) {
   Object.entries(timeframes).forEach(([timeframe, config]) => {
     if (!charts[timeframe]) return;
 
-    // Fetch historical data for the new token
     fetch(
       `http://127.0.0.1:5000/history?interval=${config.interval}&token=${token}`
     )
       .then((response) => response.json())
       .then((data) => {
-        if (!data || !Array.isArray(data) || data.length === 0) {
-          console.warn(`No valid data returned for ${timeframe} interval.`);
+        if (!data || !Array.isArray(data)) {
+          console.warn(`No data for ${timeframe}`);
           return;
         }
 
-        // Format the candlestick data
         const formattedData = data.map((item) => ({
           time: Math.floor(item.time),
-          open: Number(parseFloat(item.open).toFixed(4)),
-          high: Number(parseFloat(item.high).toFixed(4)),
-          low: Number(parseFloat(item.low).toFixed(4)),
-          close: Number(parseFloat(item.close).toFixed(4)),
+          open: Number(item.open),
+          high: Number(item.high),
+          low: Number(item.low),
+          close: Number(item.close),
         }));
 
-        // Format the volume data
-        const volumeData = data
-          .map((item) => ({
-            time: Math.floor(item.time),
-            value: Number(parseFloat(item.volume).toFixed(4)),
-            color:
-              parseFloat(item.close) >= parseFloat(item.open)
-                ? "#26a69a"
-                : "#ef5350",
-          }))
-          .filter((item) => item.time && !isNaN(item.value));
+        const volumeData = data.map((item) => ({
+          time: Math.floor(item.time),
+          value: Number(item.volume),
+          color: item.close >= item.open ? "#26a69a" : "#ef5350",
+        }));
 
-        // Update the chart with the new data
         const chart = charts[timeframe];
         chart.candlestickSeries.setData(formattedData);
         chart.volumeSeries.setData(volumeData);
-
-        // Fit the content to the chart
         chart.candlestickChart.timeScale().fitContent();
         chart.volumeChart.timeScale().fitContent();
       })
-      .catch((error) =>
-        console.error(`Error fetching ${timeframe} chart data:`, error)
-      );
+      .catch((error) => console.error(`Fetch error (${timeframe}):`, error));
   });
 }

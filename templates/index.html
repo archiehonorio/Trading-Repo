@@ -7,31 +7,38 @@
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='css/index.css')}}"
-      href="{{ url_for('static', filename='css/table.css')}}"
+      href="{{ url_for('static', filename='css/index.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/table.css') }}"
     />
   </head>
   <body>
     <nav><h2>WINNER WINNER CHICKEN DINNER!</h2></nav>
 
     <header>
-      <div id="container" class="chart-container"></div>
+      <div class="container-chart-token">
+        <div class="token-selection">
+          <label for="token-select">Chart Token:</label>
+          <select id="token-select">
+            <option value="XRPUSDT" selected>XRPUSDT</option>
+            <option value="ADAUSDT">ADAUSDT</option>
+            <option value="BTCUSDT">BTCUSDT</option>
+            <option value="ETHUSDT">ETHUSDT</option>
+            <option value="TRUMPUSDT">TRUMPUSDT</option>
+          </select>
+          <button id="update-chart">Update</button>
+        </div>
+        <div id="container" class="chart-container"></div>
+      </div>
+
       <div class="trading-section-control">
         <!-- Trading Form Section -->
         <section class="trading-section">
           <h3>Trading Controls</h3>
           <!-- Selecting Token Chart -->
-          <div class="token-selection">
-            <label for="token-select">Select Chart Token:</label>
-            <select id="token-select">
-              <option value="XRPUSDT" selected>XRPUSDT</option>
-              <option value="ADAUSDT">ADAUSDT</option>
-              <option value="BTCUSDT">BTCUSDT</option>
-              <option value="ETHUSDT">ETHUSDT</option>
-              <option value="TRUMPUSDT">TRUMPUSDT</option>
-            </select>
-            <button id="update-chart">Update Chart</button>
-          </div>
+
           <form action="/trade" method="post" class="trading-form">
             <div class="form-group">
               <label for="quantity">Quantity</label>

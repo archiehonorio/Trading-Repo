@@ -49,11 +49,12 @@ nav {
 }
 
 /* Chart Container Styles */
-#container {
+.container-chart-token {
   width: 60%;
   max-width: 1920px;
   padding: 20px;
   display: flex;
+  flex-direction: column;
   margin-right: 2rem;
   height: 100%;
 }
