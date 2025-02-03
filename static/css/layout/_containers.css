@@ -38,3 +38,8 @@ main {
   justify-content: center;
   gap: var(--spacing-xl);
 }
+
+.positions-container,
+.orders-container {
+  margin-bottom: 0.5rem;
+}

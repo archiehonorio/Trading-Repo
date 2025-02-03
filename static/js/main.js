@@ -1,9 +1,13 @@
 import { initializeCharts } from "./modules/charts/chart-manager.js";
 import { fetchDataForCharts } from "./modules/charts/chart-data-service.js";
 import { setupWebSockets } from "./modules/services/websocket-service.js";
+import {
+  setupMarkPriceWebSocket,
+  closeMarkPriceWebSocket,
+} from "./modules/services/markprice-websocket.js"; // New import
 import { setupResizeHandling } from "./modules/utils/resize-handler.js";
-import { initializeFormControls } from "./modules/forms/form.js"; // Add this import
-
+import { initializeFormControls } from "./modules/forms/form.js";
+import { initializeTradingGrid } from "./modules/trading-grid/trading-grid.js";
 import { CONFIG } from "./modules/config/constants.js";
 import { StateManager } from "./modules/core/state-manager.js";
 import {
@@ -27,8 +31,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  // Initialize trading grid
+  initializeTradingGrid();
+
   // Initialize form controls
-  initializeFormControls(); // Add this line
+  initializeFormControls();
 
   const vR = 20;
   const timeframes = {
@@ -61,10 +68,31 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize charts and WebSockets
   const charts = initializeCharts(mainContainer, timeframes);
   let currentToken = document.getElementById("token-select").value;
-  let webSockets = setupWebSockets(timeframes, charts, currentToken);
+  let webSockets = {};
 
-  // Load initial data
+  // Function to initialize WebSockets
+  function initializeWebSockets(token) {
+    webSockets = setupWebSockets(timeframes, charts, token);
+    setupMarkPriceWebSocket(token); // Initialize mark price WebSocket
+  }
+
+  // Function to clean up WebSockets
+  function cleanupWebSockets() {
+    // Close chart WebSockets
+    Object.values(webSockets).forEach((ws) => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.close();
+      }
+    });
+    webSockets = {};
+
+    // Close mark price WebSocket
+    closeMarkPriceWebSocket();
+  }
+
+  // Load initial data and initialize WebSockets
   fetchDataForCharts(timeframes, charts, currentToken);
+  initializeWebSockets(currentToken);
   setupResizeHandling(charts, timeframes);
 
   // Update chart button handler
@@ -73,25 +101,24 @@ document.addEventListener("DOMContentLoaded", function () {
     .addEventListener("click", function () {
       const newToken = document.getElementById("token-select").value;
 
-      // Close all existing WebSockets
-      Object.entries(webSockets).forEach(([timeframe, ws]) => {
-        if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.close();
-          console.log(`Closed WebSocket for ${timeframe}`);
-        }
-      });
-      webSockets = {}; // Clear existing references
+      // Clean up existing WebSockets
+      cleanupWebSockets();
 
       // Update historical data first
       updateChartsWithNewToken(newToken, charts, timeframes);
 
-      // Reinitialize WebSockets after short delay
+      // Reinitialize WebSockets after a short delay
       setTimeout(() => {
-        webSockets = setupWebSockets(timeframes, charts, newToken);
+        initializeWebSockets(newToken);
         currentToken = newToken;
         console.log(`Switched to ${newToken} futures`);
       }, 500);
     });
+
+  // Cleanup on page unload
+  window.addEventListener("beforeunload", () => {
+    cleanupWebSockets();
+  });
 });
 
 // Historical data update function
@@ -148,6 +175,7 @@ function updateChartsWithNewToken(token, charts, timeframes) {
   });
 }
 
+// Orders and positions handling (unchanged)
 document.addEventListener("DOMContentLoaded", function () {
   const ordersContainer = document.getElementById("orders-container");
   const positionsContainer = document.getElementById("positions-container");

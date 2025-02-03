@@ -26,7 +26,7 @@ export function initializeCharts(mainContainer, timeframes) {
 
     charts[timeframe] = createChart(config.container, config.visibleRange);
   });
-
+  window.tradingCharts = charts;
   return charts;
 }
 
