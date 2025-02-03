@@ -1,0 +1,12 @@
+header {
+  background-color: var(--bg-secondary);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  display: flex;
+  margin: 0;
+  justify-content: flex-start;
+}
+.token-selection {
+  align-self: flex-start;
+  margin-bottom: var(--spacing-md);
+}

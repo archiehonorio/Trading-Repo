@@ -19,8 +19,6 @@ export function setupResizeHandling(charts, timeframes) {
           try {
             chart.candlestickChart.resize(width, candlestickHeight);
             chart.volumeChart.resize(width, volumeHeight);
-
-            // Maintain zoom level
             chart.candlestickChart.timeScale().fitContent();
             chart.volumeChart.timeScale().fitContent();
           } catch (error) {

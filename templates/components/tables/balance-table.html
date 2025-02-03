@@ -1,0 +1,31 @@
+{% macro balance_table(title, balances, headers, exchange_rate) %}
+<div class="wallet-section">
+  <h2>{{ title }}</h2>
+  {% if balances %}
+  <table class="balance-table">
+    <thead>
+      <tr>
+        {% for header in headers %}
+        <th>{{ header }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for balance in balances %}
+      <tr>
+        {% for key in headers %}
+        <td>
+          {% if key == 'Total (PHP)' %} ₱{{ (balance['total'] | float *
+          exchange_rate) | round(2) }} {% else %} {{
+          balance[key.lower().replace(' ', '_')] }} {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No {{ title.lower() }} found.</p>
+  {% endif %}
+</div>
+{% endmacro %}

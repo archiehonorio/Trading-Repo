@@ -1,122 +1,205 @@
 from flask import Blueprint, request, redirect, flash, jsonify
-from services.binance_client import client
-from binance.enums import SIDE_BUY, ORDER_TYPE_LIMIT, TIME_IN_FORCE_GTC
-from binance.exceptions import BinanceAPIException
 from decimal import Decimal
+import time
+import threading
 
+# Create a Blueprint for trade routes
 trade_bp = Blueprint('trade', __name__)
 
-@trade_bp.route("/buy", methods=["POST"])
-def buy():
-    try:
-        order = client.create_order(
-            symbol=request.form['token_symbol'], 
-            side=SIDE_BUY, 
-            type=ORDER_TYPE_LIMIT, 
-            timeInForce=TIME_IN_FORCE_GTC,
-            quantity=request.form['quantity'],
-            price=request.form['price']
-        )
-    except Exception as error:
-        flash(str(error), "Error")
-    return redirect('/')
+# Simulated trading storage
+simulated_balance = Decimal('10000')  # Starting balance
+simulated_positions = {}
+open_orders = []
+trade_history = []
 
-@trade_bp.route("/sell")
-def sell():
-    return "indexzz"
+# Lock for thread-safe operations
+simulation_lock = threading.Lock()
 
-@trade_bp.route("/settings")
-def settings():
-    return "indexdd"
+def get_current_price(symbol):
+    """
+    Simulate fetching the current price of a symbol.
+    In a real implementation, this would call Binance's API.
+    """
+    # Simulated price for testing
+    return Decimal('30000')  # Replace with actual price fetching logic
+
+def calculate_fee(quantity, price):
+    """Calculate Binance-style fees (0.04% for futures)"""
+    return quantity * price * Decimal('0.0004')
+
+def calculate_liquidation_price(position, current_price):
+    """Simplified liquidation price calculation"""
+    leverage = position['leverage']
+    side = position['side']
+    entry_price = position['entry_price']
+    
+    if side == 'LONG':
+        return entry_price * (1 - (1 / leverage) + 0.005)  # Adding 0.5% buffer
+    else:
+        return entry_price * (1 + (1 / leverage) - 0.005)
+
+@trade_bp.route("/trade", methods=["POST"])
+def handle_trade():
+    global simulated_balance, simulated_positions, open_orders
+    
+    with simulation_lock:
+        try:
+            data = request.form
+            symbol = data['token_symbol']
+            quantity = Decimal(data['quantity'])
+            leverage = int(data['leverage'])
+            order_type = 'LIMIT' if 'price' in data else 'MARKET'
+            price = Decimal(data.get('price', get_current_price(symbol)))
+            side = 'LONG' if 'buy' in data else 'SHORT'
+            
+            # Get current market price
+            current_price = get_current_price(symbol)
+            
+            # Calculate required margin
+            contract_size = Decimal('1')  # Adjust based on actual contract specs
+            margin = (quantity * price) / leverage
+            
+            # Check available balance
+            if margin > simulated_balance:
+                flash("Insufficient margin", "error")
+                return redirect('/')
+            
+            # Deduct margin
+            simulated_balance -= margin
+            
+            # Create position
+            position_id = f"{symbol}-{int(time.time()*1000)}"
+            position = {
+                'id': position_id,
+                'symbol': symbol,
+                'side': side,
+                'quantity': quantity,
+                'entry_price': price,
+                'leverage': leverage,
+                'margin': margin,
+                'timestamp': time.time(),
+                'liquidation_price': calculate_liquidation_price({
+                    'side': side,
+                    'leverage': leverage,
+                    'entry_price': price
+                }, current_price),
+                'unrealized_pnl': Decimal('0'),
+                'status': 'OPEN'
+            }
+            
+            # Apply fees
+            fee = calculate_fee(quantity, price)
+            simulated_balance -= fee
+            
+            simulated_positions[position_id] = position
+            trade_history.append({
+                **position,
+                'fee': fee,
+                'type': 'ENTRY'
+            })
+            
+            flash(f"Position opened: {position_id}", "success")
+            
+        except Exception as e:
+            flash(str(e), "error")
+        
+        return redirect('/')
+
+@trade_bp.route("/close-position/<position_id>", methods=["POST"])
+def close_position(position_id):
+    global simulated_balance, simulated_positions
+    
+    with simulation_lock:
+        try:
+            if position_id not in simulated_positions:
+                flash("Position not found", "error")
+                return redirect('/')
+            
+            position = simulated_positions[position_id]
+            current_price = get_current_price(position['symbol'])
+            
+            # Calculate PnL
+            price_diff = current_price - position['entry_price']
+            if position['side'] == 'SHORT':
+                price_diff = -price_diff
+                
+            pnl = position['quantity'] * price_diff
+            return_margin = position['margin'] + pnl
+            
+            # Update balance
+            simulated_balance += return_margin
+            
+            # Apply exit fee
+            exit_fee = calculate_fee(position['quantity'], current_price)
+            simulated_balance -= exit_fee
+            
+            # Record trade
+            trade_history.append({
+                **position,
+                'exit_price': current_price,
+                'fee': exit_fee,
+                'pnl': pnl,
+                'type': 'EXIT'
+            })
+            
+            # Close position
+            del simulated_positions[position_id]
+            
+            flash(f"Position closed. PnL: {pnl:.2f}", "success")
+            
+        except Exception as e:
+            flash(str(e), "error")
+        
+        return redirect('/')
+
+@trade_bp.route("/get_positions", methods=["GET"])
+def get_positions():
+    # Update unrealized PnL
+    with simulation_lock:
+        for position in simulated_positions.values():
+            current_price = get_current_price(position['symbol'])
+            price_diff = current_price - position['entry_price']
+            if position['side'] == 'SHORT':
+                price_diff = -price_diff
+            position['unrealized_pnl'] = position['quantity'] * price_diff
+            position['liquidation_price'] = calculate_liquidation_price(position, current_price)
+            
+        return jsonify(list(simulated_positions.values()))
+
+@trade_bp.route("/get_balance", methods=["GET"])
+def get_balance():
+    return jsonify({
+        'simulated_balance': float(simulated_balance),
+        'total_value': float(simulated_balance + sum(
+            p['unrealized_pnl'] for p in simulated_positions.values()
+        ))
+    })
 
 @trade_bp.route('/get_listen_key', methods=['POST'])
 def get_listen_key():
     try:
-        # The correct method for USDT-M Futures listen key
-        response = client.futures_stream_get_listen_key()
-        
-        # Add logging to debug
-        print("Listen key response:", response)
-        
-        # Check if response is a string (some versions of python-binance return just the key)
-        if isinstance(response, str):
-            return jsonify({'listenKey': response})
-        # If response is a dict (newer versions return a dict)
-        elif isinstance(response, dict) and 'listenKey' in response:
-            return jsonify({'listenKey': response['listenKey']})
-        else:
-            return jsonify({'error': 'Invalid response format'}), 500
-            
-    except BinanceAPIException as e:
-        print(f"Binance API Exception: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        # Simulate a listen key for testing
+        listen_key = f"simulated_listen_key_{int(time.time())}"
+        return jsonify({'listenKey': listen_key}), 200
     except Exception as e:
-        print(f"General Exception: {str(e)}")
+        print(f"Error generating listen key: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@trade_bp.route('/keep_listen_key_alive', methods=['POST'])
-def keep_listen_key_alive():
-    try:
-        data = request.json
-        listen_key = data.get('listenKey')
-        if listen_key:
-            # The correct method for USDT-M Futures listen key keepalive
-            client.futures_stream_keepalive(listen_key)
-            return jsonify({'status': 'success'})
-        return jsonify({'error': 'No listen key provided'}), 400
-    except Exception as e:
-        print(f"Keep-alive Exception: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@trade_bp.route('/get_open_orders')
+@trade_bp.route('/get_open_orders', methods=['GET'])
 def get_open_orders():
     try:
-        orders = client.futures_get_open_orders()
-        return jsonify(orders)
+        # Return simulated open orders
+        simulated_orders = [
+            {
+                'orderId': 1,
+                'symbol': 'BTCUSDT',
+                'side': 'BUY',
+                'price': '30000',
+                'quantity': '0.01',
+                'status': 'NEW'
+            }
+        ]
+        return jsonify(simulated_orders), 200
     except Exception as e:
-        print(f"Get orders Exception: {str(e)}")
+        print(f"Error fetching orders: {str(e)}")
         return jsonify({'error': str(e)}), 500
-    
-
-@trade_bp.route('/get_positions')
-def get_positions():
-    try:
-        # Get account information from Binance Futures
-        account_info = client.futures_account()
-        
-        if not account_info or 'positions' not in account_info:
-            print("Invalid account info received:", account_info)
-            return jsonify({'error': 'Invalid account information received'}), 500
-            
-        # Filter and format positions
-        positions = []
-        for position in account_info['positions']:
-            try:
-                position_amt = Decimal(position.get('positionAmt', '0'))
-                # Only include positions that have a non-zero amount
-                if position_amt != 0:
-                    positions.append({
-                        'symbol': position.get('symbol', ''),
-                        'positionAmt': str(position_amt),
-                        'entryPrice': position.get('entryPrice', '0'),
-                        'markPrice': position.get('markPrice', '0'),
-                        'unPnl': position.get('unrealizedProfit', '0'),
-                        'liquidationPrice': position.get('liquidationPrice', '0'),
-                        'leverage': position.get('leverage', '1')
-                    })
-            except (ValueError, TypeError, KeyError) as e:
-                print(f"Error processing position: {position}, Error: {str(e)}")
-                continue
-                
-        print(f"Successfully fetched {len(positions)} active positions")
-        return jsonify(positions)
-        
-    except BinanceAPIException as e:
-        error_msg = f"Binance API error: {str(e)}, code: {e.code}, message: {e.message}"
-        print(error_msg)
-        return jsonify({'error': error_msg}), 500
-        
-    except Exception as e:
-        error_msg = f"Unexpected error fetching positions: {str(e)}"
-        print(error_msg)
-        return jsonify({'error': error_msg}), 500

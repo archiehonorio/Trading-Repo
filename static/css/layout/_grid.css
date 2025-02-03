@@ -1,0 +1,30 @@
+.trading-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.price-control {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.market-price-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.market-price-checkbox label {
+  font-size: 0.9em;
+  color: #666;
+}

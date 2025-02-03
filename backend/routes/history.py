@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.binance_client import client
+from ..services.binance_client import client
 from binance import Client
 from datetime import datetime, timedelta
 

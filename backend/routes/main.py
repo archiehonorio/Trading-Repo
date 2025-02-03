@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, flash
 import requests
-from services.binance_client import client
-from services.balance_formatter import get_non_zero_balances
+from ..services.binance_client import client
+from ..services.balance_formatter import get_non_zero_balances
 
 main_bp = Blueprint('main', __name__)
 
@@ -16,7 +16,7 @@ def get_exchange_rate():
 
 @main_bp.route("/")
 def index():
-    title = 'Trading Bot'
+    title = 'Geno AI'
     exchange_rate = get_exchange_rate()  # Fetch the current exchange rate
     try:
         exchange_info = client.get_exchange_info()
@@ -59,10 +59,10 @@ def index():
         return render_template(
             'index.html',
             title=title,
-            spot_balances=[],
-            funding_balances=[],
-            usds_futures_balances=[],
-            coin_futures_balances=[],
-            symbols=[],
-            exchange_rate=exchange_rate  # Pass the exchange rate even in case of error
+            spot_balances=spot_balances,
+            funding_balances=funding_balances,
+            usds_futures_balances=usds_futures_balances,
+            coin_futures_balances=coin_futures_balances,
+            symbols=symbols,
+            exchange_rate=exchange_rate  
         )

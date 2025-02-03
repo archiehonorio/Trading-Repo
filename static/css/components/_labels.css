@@ -1,0 +1,5 @@
+.token-selection label {
+  color: var(--text-light);
+  font-size: var(--font-md);
+  font-weight: bold;
+}

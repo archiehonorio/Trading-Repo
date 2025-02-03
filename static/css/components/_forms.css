@@ -1,0 +1,89 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.amount-control {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.slider-container {
+  position: relative;
+  width: 100%;
+}
+
+.slider {
+  width: 100%;
+  margin: 0;
+  z-index: 9999999;
+}
+
+.slider-markers {
+  position: absolute;
+  top: 15.5px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.slider-markers span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 12px;
+}
+
+.slider-markers span:nth-child(1) {
+  left: 0%;
+}
+.slider-markers span:nth-child(2) {
+  left: 20%;
+}
+.slider-markers span:nth-child(3) {
+  left: 50%;
+}
+.slider-markers span:nth-child(4) {
+  left: 80%;
+}
+.slider-markers span:nth-child(5) {
+  left: 100%;
+}
+
+.slider-markers span:nth-child(1)::before,
+.slider-markers span:nth-child(2)::before,
+.slider-markers span:nth-child(3)::before,
+.slider-markers span:nth-child(4)::before,
+.slider-markers span:nth-child(5)::before {
+  content: "";
+  position: absolute;
+  top: -10px; /* Adjust to position circles on the slider */
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: var(--color-secondary);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}

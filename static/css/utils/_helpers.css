@@ -1,0 +1,18 @@
+.positive {
+  color: var(--color-success);
+  font-weight: bold;
+}
+
+.negative {
+  color: var(--color-danger);
+  font-weight: bold;
+}
+
+.error-message {
+  padding: var(--spacing-md);
+  border: 1px solid rgba(246, 70, 93, 0.2);
+  background-color: rgba(246, 70, 93, 0.05);
+  color: var(--color-danger);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}

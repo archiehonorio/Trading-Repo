@@ -1,0 +1,55 @@
+<section class="trading-section">
+  {% if usds_futures_balances %} {% for balance in usds_futures_balances %}
+  <h3 class="trading-title">Trading Controls</h3>
+  <form class="trading-form">
+    <div class="form-container">
+      <div class="toggle-group">
+        <button type="button" class="toggle-btn active">Isolated</button>
+        <button type="button" class="toggle-btn">Cross</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Order Type</label>
+        <select class="form-select">
+          <option>Market</option>
+          <option selected>Limit</option>
+          <option>Stop Limit</option>
+        </select>
+      </div>
+
+      <div class="balance-info">
+        <span
+          >Available:
+          <span class="balance-amount"
+            >{{ balance.wallet_balance }} USDT</span
+          ></span
+        >
+      </div>
+
+      <!-- Amount Control -->
+      {% include 'components/trading-form/amount-control.html' %}
+
+      <!-- Trading Grid -->
+      {% include 'components/trading-form/trading-grid.html' %}
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button type="button" class="btn btn-buy">Buy/Long</button>
+        <button type="button" class="btn btn-sell">Sell/Short</button>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="trading-footer">
+        <small class="footer-text"
+          >Max: {{ balance.wallet_balance }} USDT | TIF GTC</small
+        >
+        <small class="footer-text"
+          >FEES: | Maker: 0.0200% | Taker: 0.0500%</small
+        >
+      </div>
+    </div>
+  </form>
+  {% endfor %} {% else %}
+  <p>No USDⓈ-M futures balances found.</p>
+  {% endif %}
+</section>

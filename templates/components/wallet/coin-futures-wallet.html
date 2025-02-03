@@ -1,0 +1,4 @@
+{% from 'components/tables/balance-table.html' import balance_table %} {{
+balance_table( 'COIN-M Futures Wallet Balances', coin_futures_balances,
+['Asset', 'Wallet Balance', 'Unrealized PNL', 'Total', 'Total (PHP)'],
+exchange_rate ) }}

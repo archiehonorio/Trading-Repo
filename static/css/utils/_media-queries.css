@@ -1,0 +1,28 @@
+@media (max-width: 1200px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  [id^="chart-"] {
+    height: 350px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .trading-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .container-chart-token {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .trading-section {
+    padding: var(--spacing-md);
+  }
+
+  .balance-table {
+    font-size: var(--font-sm);
+  }
+}

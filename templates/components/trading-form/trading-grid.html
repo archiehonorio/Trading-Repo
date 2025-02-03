@@ -1,0 +1,49 @@
+<div class="trading-grid">
+  <div class="input-group">
+    <div class="price-control">
+      <label class="form-label">Price</label>
+      <div class="market-price-checkbox">
+        <input type="checkbox" id="market-price-checkbox" />
+        <label for="market-price-checkbox">Use Market Price</label>
+      </div>
+    </div>
+    <input
+      type="text"
+      class="form-input"
+      id="price-input"
+      placeholder="Market Price"
+    />
+  </div>
+  <div class="input-group">
+    <label class="form-label">Quantity</label>
+    <input type="text" class="form-input" placeholder="6.5017" />
+  </div>
+  <div class="input-group">
+    <label class="form-label">Leverage</label>
+    <input type="number" class="form-input" value="5" min="1" max="75" />
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const priceCheckbox = document.getElementById("market-price-checkbox");
+    const priceInput = document.getElementById("price-input");
+
+    priceCheckbox.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        // Get current market price from your price feed
+        const currentPrice = getCurrentMarketPrice(); // Implement this function
+        priceInput.value = currentPrice;
+        priceInput.disabled = true;
+      } else {
+        priceInput.value = "";
+        priceInput.disabled = false;
+      }
+    });
+
+    // Example implementation - replace with actual price feed
+    function getCurrentMarketPrice() {
+      // This should come from your WebSocket feed or API
+      return "1.2345"; // Replace with real price
+    }
+  });
+</script>

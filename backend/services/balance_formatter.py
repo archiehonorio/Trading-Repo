@@ -74,7 +74,7 @@ def get_non_zero_balances(balances, wallet_type='spot'):
                 if free_amount > 0 or locked_amount > 0:
                     filtered.append({
                         'asset': balance['asset'],
-                        'free': format_number(free_amount),
+                        'available': format_number(free_amount),
                         'locked': format_number(locked_amount),
                         'total': format_number(free_amount + locked_amount)
                     })

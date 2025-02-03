@@ -1,0 +1,23 @@
+.balance-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--spacing-sm);
+  background-color: var(--bg-light);
+}
+
+.balance-table th,
+.balance-table td {
+  padding: var(--spacing-md);
+  text-align: left;
+  border: 1px solid var(--border-color);
+}
+
+.balance-table th {
+  background-color: var(--bg-dark);
+  font-weight: bold;
+  color: var(--text-secondary);
+}
+
+.balance-table tbody tr:hover {
+  background-color: var(--bg-dark);
+}

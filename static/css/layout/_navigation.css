@@ -1,0 +1,13 @@
+nav {
+  width: 100%;
+  height: var(--header-height);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+nav h2 {
+  font-size: var(--font-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-md);
+}
