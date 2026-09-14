@@ -1,7 +1,7 @@
 .trading-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
 .charts-grid {
@@ -15,16 +15,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
 }
 
 .market-price-checkbox {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xs);
 }
 
 .market-price-checkbox label {
-  font-size: 0.9em;
-  color: #666;
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.market-price-checkbox input[type="checkbox"] {
+  accent-color: var(--color-accent);
+  cursor: pointer;
 }

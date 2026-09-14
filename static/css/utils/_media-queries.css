@@ -1,28 +1,33 @@
-@media (max-width: 1200px) {
-  .charts-grid {
-    grid-template-columns: 1fr;
-  }
-
-  [id^="chart-"] {
-    height: 350px !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .trading-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 1100px) {
+  header {
+    flex-direction: column;
+    height: auto;
   }
 
   .container-chart-token {
     width: 100%;
-    margin-right: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    height: calc(var(--chart-height) + 60px);
   }
 
-  .trading-section {
-    padding: var(--spacing-md);
+  .trading-section-control {
+    width: 100%;
+    max-height: none;
+  }
+}
+
+@media (max-width: 768px) {
+  main { padding: var(--spacing-md); }
+
+  .wallet-sections {
+    grid-template-columns: 1fr;
   }
 
-  .balance-table {
-    font-size: var(--font-sm);
+  .rsi-config {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
   }
+
+  .nav-meta { display: none; }
 }

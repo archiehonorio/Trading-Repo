@@ -1,23 +1,87 @@
 .balance-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: var(--spacing-sm);
-  background-color: var(--bg-light);
+  font-size: var(--font-sm);
 }
 
-.balance-table th,
-.balance-table td {
-  padding: var(--spacing-md);
-  text-align: left;
-  border: 1px solid var(--border-color);
+.balance-table thead {
+  background: var(--bg-elevated);
 }
 
 .balance-table th {
-  background-color: var(--bg-dark);
-  font-weight: bold;
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
   color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.balance-table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-xs);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.balance-table td:first-child {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  color: var(--text-accent);
+  font-size: var(--font-sm);
+}
+
+.balance-table tbody tr {
+  transition: background 0.15s;
 }
 
 .balance-table tbody tr:hover {
-  background-color: var(--bg-dark);
+  background: var(--bg-elevated);
+}
+
+.balance-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Dynamic positions / orders injected by JS */
+#positions-container,
+#orders-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.section-header h3 {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.section-header .count-badge {
+  background: var(--color-accent-dim);
+  color: var(--text-accent);
+  font-size: var(--font-xs);
+  font-family: var(--font-mono);
+  padding: 1px 7px;
+  border-radius: 99px;
+  border: 1px solid var(--border-accent);
 }

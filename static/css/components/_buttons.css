@@ -1,69 +1,112 @@
 .btn {
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: 1px solid transparent;
   border-radius: var(--radius-md);
-  font-weight: 500;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  font-family: var(--font-ui);
   cursor: pointer;
-  transition: transform 0.2s ease-in-out;
-  font-weight: bold;
-  margin-right: var(--spacing-sm);
+  transition: all 0.15s ease;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
+
+.btn:active { transform: scale(0.97); }
 
 .btn-buy {
-  background-color: var(--color-success);
-  opacity: 0.99;
-}
-.btn-sell {
-  background-color: var(--color-danger);
-  opacity: 0.99;
+  background: var(--color-success-dim);
+  color: var(--color-success);
+  border-color: rgba(0, 230, 118, 0.3);
+  flex: 1;
 }
 
-.btn:hover {
-  transform: scale(1.05);
-  color: var(--text-light);
+.btn-buy:hover {
+  background: var(--color-success);
+  color: var(--bg-base);
+  box-shadow: 0 0 16px rgba(0, 230, 118, 0.4);
+}
+
+.btn-sell {
+  background: var(--color-danger-dim);
+  color: var(--color-danger);
+  border-color: rgba(255, 61, 94, 0.3);
+  flex: 1;
+}
+
+.btn-sell:hover {
+  background: var(--color-danger);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(255, 61, 94, 0.4);
 }
 
 .btn--primary {
-  background: var(--color-primary);
-  color: var(--text-light);
+  background: var(--color-accent-dim);
+  color: var(--text-accent);
+  border-color: var(--border-accent);
 }
 
-.btn--success {
-  background: var(--color-success);
-  color: var(--text-light);
+.btn--primary:hover {
+  background: var(--color-accent);
+  color: var(--bg-base);
+  box-shadow: var(--color-accent-glow);
 }
 
-.btn--danger {
-  background: var(--color-danger);
-  color: var(--text-light);
+/* Toggle buttons (Isolated / Cross, etc.) */
+.toggle-group {
+  display: flex;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 3px;
 }
 
 .toggle-btn {
   flex: 1;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: 5px var(--spacing-md);
   border: none;
   border-radius: var(--radius-sm);
-  background: var(--bg-dark);
+  background: transparent;
   color: var(--text-secondary);
+  font-size: var(--font-xs);
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .toggle-btn.active {
-  background: var(--color-primary);
-  color: var(--text-light);
+  background: var(--bg-elevated);
+  color: var(--text-accent);
 }
 
-.token-selection button {
-  background: var(--color-primary);
-  color: var(--text-light);
-  padding: var(--spacing-md) var(--spacing-lg);
-  border: none;
-  border-radius: var(--radius-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
+.toggle-btn:hover:not(.active) {
+  color: var(--text-primary);
 }
-.token-selection button:hover {
-  background: var(--color-primary-dark);
+
+/* Token selector button */
+.token-selection button,
+#update-chart {
+  background: var(--color-accent-dim);
+  color: var(--text-accent);
+  border: 1px solid var(--border-accent);
+  padding: 5px var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.token-selection button:hover,
+#update-chart:hover {
+  background: var(--color-accent);
+  color: var(--bg-base);
+  box-shadow: var(--color-accent-glow);
 }

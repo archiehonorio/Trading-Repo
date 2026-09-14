@@ -1,18 +1,26 @@
-.positive {
-  color: var(--color-success);
-  font-weight: bold;
-}
+.positive { color: var(--color-success); font-weight: 600; }
+.negative { color: var(--color-danger);  font-weight: 600; }
 
-.negative {
-  color: var(--color-danger);
-  font-weight: bold;
+.text-accent { color: var(--text-accent)  !important; }
+.text-muted  { color: var(--text-muted)   !important; }
+.text-mono   { font-family: var(--font-mono) !important; }
+
+.hidden { display: none !important; }
+
+.no-data {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+  font-style: italic;
 }
 
 .error-message {
   padding: var(--spacing-md);
-  border: 1px solid rgba(246, 70, 93, 0.2);
-  background-color: rgba(246, 70, 93, 0.05);
+  border: 1px solid rgba(255, 61, 94, 0.25);
+  background: rgba(255, 61, 94, 0.08);
   color: var(--color-danger);
   border-radius: var(--radius-md);
   margin-bottom: var(--spacing-md);
+  font-size: var(--font-sm);
 }

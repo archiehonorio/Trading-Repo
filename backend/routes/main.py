@@ -18,6 +18,11 @@ def get_exchange_rate():
 def index():
     title = 'Geno AI'
     exchange_rate = get_exchange_rate()  # Fetch the current exchange rate
+    symbols = []
+    spot_balances = []
+    funding_balances = []
+    usds_futures_balances = []
+    coin_futures_balances = []
     try:
         exchange_info = client.get_exchange_info()
         symbols = exchange_info['symbols']

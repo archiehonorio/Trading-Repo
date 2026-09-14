@@ -1,23 +1,27 @@
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin-bottom: var(--spacing-md);
-  color: var(--text-primary);
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-ui);
   font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
 }
 
-h2 {
-  font-size: var(--font-xl);
+h2 { font-size: var(--font-xl); }
+h3 { font-size: var(--font-lg); }
+
+p { margin-bottom: var(--spacing-md); color: var(--text-secondary); }
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-sm);
 }
 
-h3 {
-  font-size: var(--font-lg);
-  color: var(--color-primary);
+.label-tag {
+  font-size: var(--font-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
 }
 
-p {
-  margin-bottom: var(--spacing-md);
-}
+.value-positive { color: var(--text-success); }
+.value-negative { color: var(--text-danger); }
