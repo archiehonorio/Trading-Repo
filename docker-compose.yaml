@@ -2,8 +2,8 @@ services:
   geno-ai:
     build: .
     restart: unless-stopped
-    ports:
-      - "${HOST_PORT:-5000}:5000"
+    expose:
+      - "5000"
     environment:
       API_KEY: ${API_KEY:?Set your Binance API key}
       API_SECRET: ${API_SECRET:?Set your Binance API secret}
